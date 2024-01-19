@@ -1,0 +1,162 @@
+  {% extends "viewDetails.html"%}
+  {%block "content"%}
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      
+      
+  <script type="text/javascript">
+    function increment(data)
+    {
+        var result = document.getElementById(data);
+        var num = parseInt(result.value);
+        if(num<5)
+        {
+            num+=1;        
+        }
+        result.value =  num;
+        
+        
+    }
+
+    function decrement(data)
+    {
+        var result = document.getElementById(data);
+        var num = parseInt(result.value);
+        if(num>1)
+        {
+            num-=1;
+        }        
+        result.value =  num;
+    }
+  </script>
+
+
+  </head>
+  <body class="container" style="background-color: seashell;">
+    <header id="header" class="fixed-top d-flex align-items-cente">
+      <div class="container-fluid container-xl d-flex align-items-center justify-content-lg-between">
+
+        <nav id="navbar" class="navbar order-last order-lg-0">
+          <ul>
+            <li><a class="nav-link scrollto active" href="/#hero">Home</a></li>
+            <li><a class="nav-link scrollto" href="/#about">About</a></li>
+            <li><a class="nav-link scrollto" href="/#events">Event</a></li>
+            <li><a class="nav-link scrollto" href="/#gallery">Gallery</a></li>
+            <li class="dropdown">
+              <a class="dropdown-toggle" data-toggle="dropdown" href="/#category">Category
+              <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                {% for cat in cats %}
+                
+                <li><a href="/ShowMehandi/{{cat.id}}">{{cat.category_name}}</a></li>
+                {%endfor%}
+              </ul>
+            </li>
+          
+            <li><a class="nav-link scrollto" href="/#contact">Contact</a></li>
+      
+          </ul>
+          <i class="bi bi-list mobile-nav-toggle"></i>
+        </nav>
+        <ul class="nav navbar navbar-right">
+          {%if "uname" in request.session%}
+          <li><a class="nav-link scrollto" href="/showCartItems">Cart</a></li>
+          <li><a class="nav-link scrollto" href="/SignOut">Sign Out</a></li>
+          {%else%}
+          <li><a class="nav-link scrollto" href="/Login">Login</a></li>
+          <li>
+            <a class="nav-link scrollto" href="/SignUp">Sign Up</a></li>
+        </ul>
+        {%endif%}
+      
+      </div>
+      </header>    
+      </div>
+      </header>
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-dismissible alert-success">
+<a href="#"  class="close" data-dismiss="alert" aria-label="Close"></a>
+<strong>Success!</strong>
+{{message}}
+</div>
+{% endfor %}
+ {% endif %}
+  <div class="container" style="padding: 10%;font-family: 'Poppins';">
+      <div class="d-flex justify-content-center row shadow">
+              <div class="p-2">
+                  <h4>All Cart items</h4>
+                    </div>
+            
+                  <tr>
+                    <th scope="col">Image</th>
+                    <th scope="col">Mehandi Name</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Sub Total</th>
+                  </tr>
+                
+  {%for item in items%}
+  <tr>
+    <form method="post">
+      {%csrf_token%}
+      <input type="hidden" name="cart_id" value="{{item.id}}"/>
+
+  <div class="d-flex flex-row justify-content-between align-items-center p-2 bg-white mt-4 px-3 rounded">
+
+    <div class="mr-1"><img class="rounded shadow"  src="{{item.mehandi.image.url}}"  width="70"></div>
+
+    <div class="d-flex flex-column align-items-center product-details">
+    <span class="font-weight-bold">
+  {{item.mehandi.mehandi_name}}</span></div>
+
+  <div class="d-flex flex-column align-items-center product-details">
+    <span class="font-weight-bold">
+  {{item.mehandi.price}}</span>
+  </div>
+  <div class="d-flex flex-column align-items-center product-details">
+    <span class="font-weight-bold">
+  <button type="button" class="button-minus border rounded-circle  icon-shape icon-sm mx-1 "
+  onclick="decrement('qty{{item.mehandi.id}}')">-</button>
+
+  <input type="text" class="quantity-field border-0 text-center w-25" id="qty{{item.mehandi.id}}" name="qty" value="{{item.qty}}" readonly/> 
+
+  <button type="button" class="button-plus border rounded-circle icon-shape icon-sm " 
+  onclick="increment('qty{{item.mehandi.id}}')">+</button></span>
+  </div>
+  <div class="d-flex flex-column align-items-center product-details">
+    <span class="font-weight-bold">{% widthratio item.mehandi.price 1 item.qty %}</span>
+  </div>
+
+
+  <td><button type="submit" class="btn btn-success"  name ="action" value="update"> Update</button>       </td>
+  <td><button type="submit" class="btn btn-success"  name ="action" value="remove"> Remove</button>  </td>
+  </div>
+  </tr>
+  </form>
+
+              {%endfor%}  
+              <hr/>
+              
+              <h1 class="headingline">Total: {{request.session.total}}</h1>     
+      </div>
+      <div class="form-group">
+        <p>
+          <a href="/proceedToPay">Proceed To Payment<i class="bi bi-arrow-right"></i></a>
+        </p>
+      </div>                
+  </div> 
+        
+  </div>
+      
+    </div> 
+  </div>
+  </div>
+  <hr/>
+
+  {%endblock%}
+  </body>
